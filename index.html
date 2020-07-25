@@ -28,6 +28,57 @@
 
     <!-- Retina Images Plugin -->
     <script src="js/retina.min.js"></script>
+    
+    <!--Auth0 -->
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/1.9/auth0-spa-js.production.js"></script>
+    <script>
+        let auth0 = null;
+        const configureClient = async () => {
+            auth0 = await createAuth0Client({
+                domain: "egeoffrey.eu.auth0.com",
+                client_id: "yCsR4pq5WheN6V29x9CNtK94dY9cpqY5"
+          });
+        };
+    
+        window.onload = async () => {
+            await configureClient();
+            updateUI();
+            const isAuthenticated = await auth0.isAuthenticated();
+
+            if (isAuthenticated) return;
+  
+            const query = window.location.search;
+            if (query.includes("code=") && query.includes("state=")) {
+                await auth0.handleRedirectCallback();
+                updateUI();
+                window.history.replaceState({}, document.title, "/");
+            }
+        };
+
+        const login = async () => {
+            await auth0.loginWithRedirect({
+                redirect_uri: window.location.origin
+            });
+        };
+
+        const logout = () => {
+            auth0.logout({
+                returnTo: window.location.origin
+            });
+        };
+
+        const updateUI = async () => {
+            const isAuthenticated = await auth0.isAuthenticated();
+            if (!isAuthenticated) {
+                document.getElementById("login").text = "Login/Register";
+                document.getElementById("login").onclick=login
+            }
+            else {
+                document.getElementById("login").text = "Logout";
+                document.getElementById("login").onclick=logout
+            } 
+        };
+    </script>
 
     <!-- Plugin CSS -->
     <link href="css/hover.min.css" rel="stylesheet">
@@ -103,13 +154,7 @@
                             <a href="#page-top"></a>
                         </li>
                         <li class="page-scroll">
-                            <a href="#concept">Concept</a>
-                        </li>
-                        <li class="page-scroll">
-                            <a href="#capabilities">Capabilities</a>
-                        </li>
-                        <li class="page-scroll">
-                            <a href="#demo">Demo</a>
+                            <a href="#discover">Discover</a>
                         </li>
                         <li class="page-scroll">
                             <a href="#features">Features</a>
@@ -118,10 +163,16 @@
                             <a href="#screenshots">Screenshots</a>
                         </li>
                         <li class="page-scroll">
-                            <a href="#download">Download</a>
+                            <a href="#demo">Demo</a>
                         </li>
                         <li class="page-scroll">
-                            <a href="#resources">Resources</a>
+                            <a href="#getit">Get it!</a>
+                        </li>
+                        <li class="page-scroll">
+                            <a href="#help">Help</a>
+                        </li>
+                        <li style="cursor: pointer;">
+                            <a class="btn btn-primary btn-rounded" id="login"><i class="fa fa-spinner fa-spin"></i> Logging in...</a>
                         </li>
                     </ul>
                 </div>
@@ -164,88 +215,62 @@
             </div>
         </header>
 
-        <!-- Concept -->
-        <section id="concept" class="text-center">
+        <!-- Discover -->
+        <section id="discover" class="text-center">
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
-                        <h2>About eGeoffrey</h2>
+                        <h2>Discover eGeoffrey</h2>
                         <hr class="primary">
                         <p>
                         eGeoffrey is a new concept which brings many ideas into one single place; eGeoffrey does some <b>home automation</b>, it <b>keeps you updated</b> on what's going on at home, it <b>alerts you on events</b>, helps you to organize your home duties, you can <b>easily interact with it</b>... and, what's even better, it can <b>acquire new skills over time!</b><br><br>
                     
                         eGeoffrey is an <b>open source, flexible and extensible framework</b>, which can be used in many ways to fit more demanding people on earth's needs. It can live with you at home (no extra room needed though), or you can get its services straight from "the cloud", wherever this thing is.</p>
-                        <p class="demo-text">Sir, Madam, do you require anything of me?</p>
                     </div>
                 </div>
-            </div>
-        </section>
-        
-        <!-- Capabilities -->
-        <section id="capabilities" class="services-1 bg-lighter">
-            <div class="container">
                 <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2 text-center">
-                        <h2>Capabilities</h2>
-                        <hr class="primary">
-                        <p>Not limited to, eGeoffrey's skills can be categorized among the following areas:</p>
-                    </div>
-                    <div class="col-lg-12 text-center" data-scrollreveal="enter bottom over 1.5s">
-                        <ul id="services-1-carousel" class="icon-effect list-inline">
-                            <li class="item">
-                                <span class="icon icon-line-chart"></span>
-                                <h3>Real-time home monitoring</h3>
-                                <p>Provides information such as temperature, power consumption, images taken from home, etc.</p>
-                            </li>
-                            <li class="item">
-                                <span class="icon icon-brain"></span>
-                                <h3>Analytical<br>brain</h3>
-                                <p>Remembers all the real-time information produced and insights of them over time. eGeoffrey can proactively send you emails with these insights on a daily basis to keep you up to date conveniently.</p>
-                            </li>
-                            <li class="item">
-                                <span class="icon icon-user-secret"></span>
-                                <h3>Survelliance and preventive spirit</h3>
-                                <p>By alerting you on events such as those when temperature threslhod's limits are surpassed and some negative consequences might happen.</p>
-                            </li>
-                            <li class="item">
-                                <span class="icon icon-pray"></span>
-                                <h3>Commited to your command</h3>
-                                <p>By the use of its different user interfaces; you can also text eGeoffrey from your instant messaging platform of choice such as Slack, Telegram and many others.</p>
-                            </li>
-                            <li class="item">
-                                <span class="icon icon-cubes"></span>
-                                <h3>Open to<br>the world</h3>
-                                <p>As eGeoffrey is also able to contextualize home-generated information with external one provided by thrid-party providers such as weather services for weather forecasting.</p>
-                            </li>
-                            <li class="item">
-                                <span class="icon icon-graduation-cap"></span>
-                                <h3>Ability to learn new skills</h3>
-                                <p>eGeoffrey skills' are endless and, whatever skills you have in mind, eGeoffrey will learn them and will use them to satisfy your needs with its best smile.</p>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Demo -->
-        <aside id="demo" class="bg-parallax-dark nopadding" style="background-image: url(img/demo_background.jpg);" data-stellar-background-ratio="0.5">
-            <div class="aside-overlay">
-                <div class="container">
-                    <div class="row text-center">
-                        <div class="col-lg-8 col-lg-offset-2">
-                            <h2>Demo</h2>
-                            <hr class="light">
-                            <p>Evaluate eGeoffrey's capabilites through our online live demo! Remember, the demo is fully functional but you will not be able to save any change to let other users enjoying it!</p>
-                            <a href="https://demo.egeoffrey.com" target="_blank" class="btn btn-outline btn-light btn-lg btn-square">Enter the Demo</a>
+                    <div class="services-1 bg-lighter">
+                        <div class="col-lg-12 text-center" data-scrollreveal="enter bottom over 1.5s">
+                            <ul id="services-1-carousel" class="icon-effect list-inline">
+                                <li class="item">
+                                    <span class="icon icon-line-chart"></span>
+                                    <h3>Real-time home monitoring</h3>
+                                    <p>Provides information such as temperature, power consumption, images taken from home, etc.</p>
+                                </li>
+                                <li class="item">
+                                    <span class="icon icon-brain"></span>
+                                    <h3>Analytical<br>brain</h3>
+                                    <p>Remembers all the real-time information produced and insights of them over time. eGeoffrey can proactively send you emails with these insights on a daily basis to keep you up to date conveniently.</p>
+                                </li>
+                                <li class="item">
+                                    <span class="icon icon-user-secret"></span>
+                                    <h3>Survelliance and preventive spirit</h3>
+                                    <p>By alerting you on events such as those when temperature threslhod's limits are surpassed and some negative consequences might happen.</p>
+                                </li>
+                                <li class="item">
+                                    <span class="icon icon-pray"></span>
+                                    <h3>Commited to your command</h3>
+                                    <p>By the use of its different user interfaces; you can also text eGeoffrey from your instant messaging platform of choice such as Slack, Telegram and many others.</p>
+                                </li>
+                                <li class="item">
+                                    <span class="icon icon-cubes"></span>
+                                    <h3>Open to<br>the world</h3>
+                                    <p>As eGeoffrey is also able to contextualize home-generated information with external one provided by thrid-party providers such as weather services for weather forecasting.</p>
+                                </li>
+                                <li class="item">
+                                    <span class="icon icon-graduation-cap"></span>
+                                    <h3>Ability to learn new skills</h3>
+                                    <p>eGeoffrey skills' are endless and, whatever skills you have in mind, eGeoffrey will learn them and will use them to satisfy your needs with its best smile.</p>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-        </aside>
+        </section>
         
         <!-- Features -->
-        <section class="services-2" id="features">
+        <section class="services-2 bg-lighter" id="features">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 text-center">
@@ -253,7 +278,7 @@
                         <hr class="primary">
                     </div>
                     <div class="col-lg-8 col-lg-offset-2 text-center">
-                        <p>From a technical standpoint, eGeoffrey brings in a <b>modern architecture</b> and a number of <b>unique, slick features</b>.
+                        <p>eGeoffrey brings in a <b>modern architecture</b> and a number of <b>unique, slick features</b>.
                         </p>
                     </div>
                 </div>
@@ -282,11 +307,33 @@
                 <div class="row">
                     <div class="col-lg-6 services-col">
                         <div class="row">
-                            <div class="col-sm-3 text-center text-primary"><i class="fa fa-4x fa-mobile-alt"></i>
+                            <div class="col-sm-3 text-center text-primary"><i class="fab fa-4x fa-chrome"></i>
                             </div>
                             <div class="col-sm-9">
                                 <h3>Modern Web Interface</h3>
-                                <p>eGeoffrey's GUI (with <b>mobile support</b>), can be <b>fully customized</b> by the user and is the easiest and simplest way to configure your eGeoffrey's instance, <b>register new sensors, view your data, control your actuators, configure rules</b> which will trigger one or more notification upon specific conditions.</p>
+                                <p>eGeoffrey's GUI can be <b>fully customized</b> by the user and is the easiest and simplest way to configure your eGeoffrey's instance, <b>register new sensors, view your data, control your actuators, configure rules</b> which will trigger one or more notification upon specific conditions.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 services-col">
+                        <div class="row">
+                            <div class="col-sm-3 text-center text-primary"><i class="fa fa-4x fa-wifi"></i>
+                            </div>
+                            <div class="col-sm-9">
+                                <h3>Remote Access</h3>
+                                <p>Stay in touch with eGeoffrey and <b>access its web interface also when you are outside of your house</b>, travelling or on vacation. Register an account on our portal and <b>access our Cloud Gateway</b>, without the need to open any port on your home router or setup a VPN</b>. Review our <a href="https://docs.egeoffrey.com/configure/remote/" target="_new">documentation</a> for accessing from outside your network.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 services-col">
+                        <div class="row">
+                            <div class="col-sm-3 text-center text-primary"><i class="fa fa-4x fa-mobile-alt"></i>
+                            </div>
+                            <div class="col-sm-9">
+                                <h3>Native Mobile App</h3>
+                                <p>Enjoy a <b>mobile experience</b> with the eGeoffrey App, now available for Android devices on <b><a href="https://play.google.com/store/apps/details?id=com.egeoffrey.app" target="_new">Google Play</a></b>. <b>Receive notifications</b> on your smartphone when something is happening and <b>access eGeoffrey's web interface</b> directly from your mobile device.</p>
                             </div>
                         </div>
                     </div>
@@ -305,7 +352,7 @@
         </section>
         
         <!-- Screenshots -->
-        <section id="screenshots" class="portfolio-1 bg-lighter">
+        <section id="screenshots" class="portfolio-1 bg-darker">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 text-center">
@@ -380,47 +427,61 @@
             </div>
         </section>
         
-        <!-- Download -->
-        <aside id="download" class="bg-parallax-dark nopadding" style="background-image: url(img/download_background.jpg);" data-stellar-background-ratio="0.5">
+        <!-- Demo -->
+        <aside id="demo" class="bg-parallax-dark nopadding" style="background-image: url(img/download_background.jpg);" data-stellar-background-ratio="0.5">
             <div class="aside-overlay">
                 <div class="container">
                     <div class="row text-center">
                         <div class="col-lg-8 col-lg-offset-2">
-                            <h2>Download</h2>
+                            <h2>Demo</h2>
                             <hr class="light">
-                            <p>eGeoffrey can run in any platform but the easiest and most convenient way to let eGeoffrey be with you in your house is by purchasing a mini personal computer such as a Raspberry Pi or Orange Pi which makes ideal to have eGeoffrey on duty all the time.<br><br>
-                            Once the operating system is installed and your device will be ready, simply copy and paste the command below to run eGeoffrey installer.
-                            <br><br>Do not forget to review our Getting Started guide for step-by-step instructions!
-                            </p>
-                            <button class="btn-outline btn-light btn-lg btn-square" style="cursor: copy" onclick='
-                                var $temp = $("<input>");
-                                $("body").append($temp);
-                                $temp.val($("#download_text").html()).select();
-                                document.execCommand("copy");
-                                $temp.remove();
-                                '><code id="download_text">sudo bash -c "$(curl -ssL https://get.egeoffrey.com)"</code>
-                            </button>
-                            <hr class="light">
-                            <p>You can also fully enjoy a mobile experience with the eGeoffrey App:</p>
-                            <ul class="list-inline button-list">
-                                <li>
-                                    <a href="https://play.google.com/store/apps/details?id=com.egeoffrey.app" target="_new">
-                                        <img style="width: 240px" src="img/google-play-badge.png" alt="">
-                                    </a>
-                                </li>
-                            </ul>
+                            <p>Evaluate eGeoffrey's capabilites through our online live demo! Remember, the demo is fully functional but you will not be able to save any change to let other users enjoying it!</p>
+                            <a href="https://demo.egeoffrey.com" target="_blank" class="btn btn-outline btn-light btn-lg btn-square">Enter the Demo</a>
                         </div>
                     </div>
                 </div>
             </div>
         </aside>
+        
+        <!-- Get it! -->
+        <section id="getit">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <h2>Get it!</h2>
+                        <hr class="primary">
+                        <p>eGeoffrey can <b>run in any platform</b> but the easiest and most convenient way to let eGeoffrey be with you in your house is by purchasing a mini personal computer such as a Raspberry Pi or Orange Pi which makes ideal to have eGeoffrey on duty all the time.<br><br>
+                        Once the operating system is installed and your device will be ready, simply <b>copy and paste the command below to run eGeoffrey installer</b>.
+                        <br>Do not forget to <b>review our <a href="https://docs.egeoffrey.com/installation/where/" target="_new">Installation Guide</a></b> for step-by-step instructions!
+                        </p>
+                        <button class="btn-outline btn-primary btn-lg btn-rounded" style="cursor: copy" onclick='
+                            var $temp = $("<input>");
+                            $("body").append($temp);
+                            $temp.val($("#download_text").html()).select();
+                            document.execCommand("copy");
+                            $temp.remove();
+                            '><code id="download_text">sudo bash -c "$(curl -ssL https://get.egeoffrey.com)"</code>
+                        </button>
+                        <hr class="primary">
+                        <p>Once finished installed, you can enjoy a mobile experience with the eGeoffrey App</p>
+                        <ul class="list-inline button-list">
+                            <li>
+                                <a href="https://play.google.com/store/apps/details?id=com.egeoffrey.app" target="_new">
+                                    <img style="width: 240px" src="img/google-play-badge.png" alt="">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Support -->
-        <section class="services-2 bg-lighter" id="resources">
+        <section class="services-2 bg-lighter" id="help">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 text-center">
-                        <h2>Resources</h2>
+                        <h2>Need Help?</h2>
                         <hr class="primary">
                     </div>
                     <div class="col-lg-8 col-lg-offset-2 text-center">
@@ -434,7 +495,7 @@
                             <div class="col-sm-3 text-center text-primary"><i class="fa fa-4x fa-running"></i>
                             </div>
                             <div class="col-sm-9">
-                                <h3><a href="https://docs.egeoffrey.com" target="_blank">Getting Started</a></h3>
+                                <h3><a href="https://docs.egeoffrey.com/installation/where/" target="_blank">Getting Started</a></h3>
                                 <p>If you are a <b>new user</b> check out the Getting Started guide which will walk you through all the basic conceps as well as the installation steps and basic configuration.</p>
                             </div>
                         </div>
@@ -444,7 +505,7 @@
                             <div class="col-sm-3 text-center text-primary"><i class="fa fa-4x fa-book-open"></i>
                             </div>
                             <div class="col-sm-9">
-                                <h3><a href="https://docs.egeoffrey.com" target="_blank">User Documentation</a></h3>
+                                <h3><a href="https://docs.egeoffrey.com/configure/workflow/" target="_blank">User Documentation</a></h3>
                                 <p>Read the full documentation to understand more about eGeoffrey's functionalities and discover <b>advanced and custom configurations</b>.</p>
                             </div>
                         </div>
@@ -463,18 +524,6 @@
                     </div>
                     <div class="col-lg-6 services-col">
                         <div class="row">
-                            <div class="col-sm-3 text-center text-primary"><i class="fa fa-4x fa-code"></i>
-                            </div>
-                            <div class="col-sm-9">
-                                <h3><a href="https://developer.egeoffrey.com" target="_blank">Developer</a></h3>
-                                <p>if you want to <b>extend eGeoffrey and make it better</b>, visit our website for Developers to understand more about its architecture and internals and guidelines on how to contribute.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6 services-col">
-                        <div class="row">
                             <div class="col-sm-3 text-center text-primary"><i class="fa fa-4x fa-shopping-cart"></i>
                             </div>
                             <div class="col-sm-9">
@@ -483,6 +532,8 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-lg-6 services-col">
                         <div class="row">
                             <div class="col-sm-3 text-center text-primary"><i class="fa-4x fab fa-github"></i>
@@ -490,6 +541,16 @@
                             <div class="col-sm-9">
                                 <h3><a href="https://github.com/egeoffrey" target="_blank">Github</a></h3>
                                 <p>If you discovered a <b>bug</B>, want to submit an <b>enhancement request</b> or simply want to <b>contribute</b> to eGeoffrey core and out-of-the-box components, visit our Github page, open up issues or submit PR requests.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 services-col">
+                        <div class="row">
+                            <div class="col-sm-3 text-center text-primary"><i class="fa fa-4x fa-code"></i>
+                            </div>
+                            <div class="col-sm-9">
+                                <h3><a href="https://developer.egeoffrey.com" target="_blank">Developer</a></h3>
+                                <p>if you want to <b>extend eGeoffrey and make it better</b>, visit our website for Developers to understand more about its architecture and internals and guidelines on how to contribute.</p>
                             </div>
                         </div>
                     </div>
@@ -508,9 +569,6 @@
                         <div class="col-md-6">
                             <ul class="list-inline button-list">
                                 <li>
-                                    <a class="btn btn-primary btn-lg" href="https://play.google.com/store/apps/details?id=com.egeoffrey.app" target="_new">
-                                        <img src="img/google-play-badge-blue.png" alt="">
-                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -521,7 +579,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
-                            <span class="small">Copyright &copy; 2019 - All Rights Reserved.</span>
+                            <span class="small"></span>
                         </div>
                     </div>
                 </div>
