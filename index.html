@@ -29,57 +29,6 @@
     <!-- Retina Images Plugin -->
     <script src="js/retina.min.js"></script>
     
-    <!--Auth0 -->
-    <script src="https://cdn.auth0.com/js/auth0-spa-js/1.9/auth0-spa-js.production.js"></script>
-    <script>
-        let auth0 = null;
-        const configureClient = async () => {
-            auth0 = await createAuth0Client({
-                domain: "egeoffrey.eu.auth0.com",
-                client_id: "yCsR4pq5WheN6V29x9CNtK94dY9cpqY5"
-          });
-        };
-    
-        window.onload = async () => {
-            await configureClient();
-            updateUI();
-            const isAuthenticated = await auth0.isAuthenticated();
-
-            if (isAuthenticated) return;
-  
-            const query = window.location.search;
-            if (query.includes("code=") && query.includes("state=")) {
-                await auth0.handleRedirectCallback();
-                updateUI();
-                window.history.replaceState({}, document.title, "/");
-            }
-        };
-
-        const login = async () => {
-            await auth0.loginWithRedirect({
-                redirect_uri: window.location.origin
-            });
-        };
-
-        const logout = () => {
-            auth0.logout({
-                returnTo: window.location.origin
-            });
-        };
-
-        const updateUI = async () => {
-            const isAuthenticated = await auth0.isAuthenticated();
-            if (!isAuthenticated) {
-                document.getElementById("login").text = "Login/Register";
-                document.getElementById("login").onclick=login
-            }
-            else {
-                document.getElementById("login").text = "Logout";
-                document.getElementById("login").onclick=logout
-            } 
-        };
-    </script>
-
     <!-- Plugin CSS -->
     <link href="css/hover.min.css" rel="stylesheet">
     <link href="css/owl.carousel.css" rel="stylesheet">
@@ -163,16 +112,10 @@
                             <a href="#screenshots">Screenshots</a>
                         </li>
                         <li class="page-scroll">
-                            <a href="#demo">Demo</a>
-                        </li>
-                        <li class="page-scroll">
                             <a href="#getit">Get it!</a>
                         </li>
                         <li class="page-scroll">
                             <a href="#help">Help</a>
-                        </li>
-                        <li style="cursor: pointer;">
-                            <a class="btn btn-primary btn-rounded" id="login"><i class="fa fa-spinner fa-spin"></i> Logging in...</a>
                         </li>
                     </ul>
                 </div>
@@ -320,8 +263,8 @@
                             <div class="col-sm-3 text-center text-primary"><i class="fa fa-4x fa-wifi"></i>
                             </div>
                             <div class="col-sm-9">
-                                <h3>Remote Access</h3>
-                                <p>Stay in touch with eGeoffrey and <b>access its web interface also when you are outside of your house</b>, travelling or on vacation. Register an account on our portal and <b>access our Cloud Gateway</b>, without the need to open any port on your home router or setup a VPN</b>. Review our <a href="https://docs.egeoffrey.com/configure/remote/" target="_new">documentation</a> for accessing from outside your network.</p>
+                                <h3>Access Everywhere</h3>
+                                <p>Stay in touch with eGeoffrey and <b>access its web interface also when you are outside of your house</b>, travelling or on vacation. Review our <a href="https://docs.egeoffrey.com/configure/remote/" target="_new">documentation</a> for accessing from outside your network.</p>
                             </div>
                         </div>
                     </div>
@@ -433,10 +376,6 @@
                 <div class="container">
                     <div class="row text-center">
                         <div class="col-lg-8 col-lg-offset-2">
-                            <h2>Demo</h2>
-                            <hr class="light">
-                            <p>Evaluate eGeoffrey's capabilites through our online live demo! Remember, the demo is fully functional but you will not be able to save any change to let other users enjoying it!</p>
-                            <a href="https://demo.egeoffrey.com" target="_blank" class="btn btn-outline btn-light btn-lg btn-square">Enter the Demo</a>
                         </div>
                     </div>
                 </div>
@@ -598,7 +537,6 @@
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/scrollReveal.js"></script>
     <script src="js/stellar.js"></script>
-    <script src="js/SmoothScroll.js"></script>
     <script src="js/isotope.pkgd.min.js"></script>
     <script src="js/theme.nav.js"></script>
     <script src="js/theme.js"></script>
